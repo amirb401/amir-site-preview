@@ -1,0 +1,14 @@
+{
+  "name": "אמיר בליזובסקי | קוסם ואמן חושים",
+  "short_name": "אמיר בליזובסקי",
+  "lang": "he",
+  "dir": "rtl",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#1c1c1c",
+  "theme_color": "#1c1c1c",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
