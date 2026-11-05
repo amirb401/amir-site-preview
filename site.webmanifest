@@ -5,8 +5,8 @@
   "dir": "rtl",
   "start_url": "/",
   "display": "browser",
-  "background_color": "#0b0b0c",
-  "theme_color": "#0b0b0c",
+  "background_color": "#0c1322",
+  "theme_color": "#0c1322",
   "icons": [
     { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
     { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
