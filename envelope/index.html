@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>אנימציית החותם · 4 אפשרויות</title>
+<style>
+  @font-face { font-family: K; src: url(karantina-hebrew-700-normal.woff2) format('woff2'); font-weight: 700; unicode-range: U+0590-05FF; }
+  @font-face { font-family: K; src: url(karantina-latin-700-normal.woff2) format('woff2'); font-weight: 700; }
+  @font-face { font-family: H; src: url(heebo-hebrew-400-normal.woff2) format('woff2'); font-weight: 400; }
+  @font-face { font-family: H; src: url(heebo-hebrew-600-normal.woff2) format('woff2'); font-weight: 600; }
+
+  :root {
+    --stage:#070b14; --bg:#0c1322; --bg-2:#131c30; --line:#26314a;
+    --ink:#f2ead9; --ink-2:#dcd3c0; --muted:#9a9a92;
+    --gold:#b8955a; --gold-hi:#cfae72; --bronze:#7d5f2c;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: H, system-ui, sans-serif; }
+  .page { max-width: 1240px; margin: 0 auto; padding: 48px 20px 80px; }
+  h1 { font: 700 clamp(2.6rem, 2rem + 3vw, 4.4rem)/.9 K; margin: 0 0 .6rem; }
+  .intro { color: var(--ink-2); max-width: 60ch; margin: 0 0 2.5rem; line-height: 1.6; }
+  .grid { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr)); }
+
+  .opt { background: var(--bg-2); border: 1px solid var(--line); padding: 22px; display: flex; flex-direction: column; gap: 14px; }
+  .opt header { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .opt h2 { font: 700 2.1rem/1 K; margin: 0; }
+  .opt h2 b { color: var(--gold-hi); font-weight: 700; }
+  .tech { font-size: .78rem; color: var(--muted); letter-spacing: .05em; white-space: nowrap; }
+  .desc { color: var(--ink-2); font-size: .95rem; line-height: 1.55; margin: 0; }
+  .stage { position: relative; height: 380px; background: var(--stage); overflow: hidden; display: grid; place-items: center; }
+  .controls { display: flex; gap: 10px; }
+  button.play {
+    font: 600 1rem H; min-height: 46px; padding: 0 22px; border-radius: 999px; border: 0; cursor: pointer;
+    background: var(--gold); color: var(--bg);
+  }
+  button.play:hover { background: var(--gold-hi); }
+  button.reset { font: 600 .95rem H; min-height: 46px; padding: 0 18px; border-radius: 999px; cursor: pointer; background: transparent; color: var(--ink); border: 1.5px solid #f2ead966; }
+  .q { position: absolute; top: 16px; inset-inline: 16px; text-align: center; color: var(--ink-2); font-size: .95rem; z-index: 5; pointer-events: none; }
+  .knew { position: absolute; bottom: 18px; inset-inline: 0; text-align: center; font: 700 2.4rem/1 K; color: var(--gold-hi); opacity: 0; z-index: 6; pointer-events: none; }
+
+  /* ---------- A: wax-sealed envelope (2D, GSAP) ---------- */
+  .envA { position: relative; width: 300px; height: 190px; perspective: 900px; margin-top: 150px; }
+  .envA .back, .envA .front, .envA .flap, .envA .card { position: absolute; }
+  .envA .back { inset: 0; background: #e6dcc6; border-radius: 4px; box-shadow: 0 30px 50px rgba(0,0,0,.45); }
+  .envA .card {
+    left: 18px; right: 18px; top: 14px; height: 160px; background: var(--ink); border-radius: 3px;
+    display: grid; place-items: center; box-shadow: 0 2px 10px rgba(0,0,0,.18); z-index: 2;
+  }
+  .envA .card span { font: 700 6rem/1 K; color: var(--bg); }
+  .envA .card small { position: absolute; bottom: 10px; font-size: .72rem; color: var(--bronze); letter-spacing: .12em; }
+  .envA .front { inset: 0; z-index: 3; pointer-events: none; }
+  .envA .front svg { width: 100%; height: 100%; display: block; }
+  .envA .flap { left: 0; right: 0; top: 0; height: 120px; transform-origin: top center; z-index: 4; transform-style: preserve-3d; }
+  .envA .flap svg { width: 100%; height: 100%; display: block; filter: drop-shadow(0 4px 6px rgba(0,0,0,.18)); }
+  .envA .seal { position: absolute; left: 50%; top: 92px; width: 62px; height: 62px; margin-left: -31px; z-index: 5; }
+  .envA .seal .half { position: absolute; inset: 0; }
+  .envA .seal svg { width: 100%; height: 100%; display: block; }
+
+  /* ---------- B: three.js ---------- */
+  .stage.b canvas { display: block; width: 100%; height: 100%; }
+  .stage.b .fallback { color: var(--muted); font-size: .9rem; }
+
+  /* ---------- C: theatre curtain ---------- */
+  .stage.c { background: radial-gradient(ellipse 60% 70% at 50% 40%, #121a2c, var(--stage) 75%); }
+  .spot { position: absolute; inset: 0; background: radial-gradient(circle at 50% 46%, rgba(207,174,114,.32) 0, rgba(207,174,114,.08) 22%, transparent 42%); opacity: 0; }
+  .numC { position: relative; font: 700 9.5rem/1 K; color: var(--gold-hi); text-shadow: 0 0 40px rgba(207,174,114,.35); opacity: 0; z-index: 1; }
+  .curtain { position: absolute; top: 0; bottom: 0; width: 51%; z-index: 3;
+    background:
+      repeating-linear-gradient(90deg, rgba(0,0,0,.28) 0 6px, transparent 6px 26px, rgba(255,255,255,.035) 26px 30px, transparent 30px 44px),
+      linear-gradient(180deg, #1b2a4a, #0f1a31 60%, #0a1222);
+    box-shadow: inset 0 -40px 60px rgba(0,0,0,.5);
+  }
+  .curtain.l { left: 0; transform-origin: left top; border-right: 2px solid var(--gold); }
+  .curtain.r { right: 0; transform-origin: right top; border-left: 2px solid var(--gold); }
+  .valance { position: absolute; top: 0; left: 0; right: 0; height: 30px; z-index: 4;
+    background: linear-gradient(180deg, #24365c, #15213b); border-bottom: 2px solid var(--gold);
+    -webkit-mask: radial-gradient(18px 14px at 18px 100%, transparent 98%, #000) 0 0/36px 100% repeat-x;
+            mask: radial-gradient(18px 14px at 18px 100%, transparent 98%, #000) 0 0/36px 100% repeat-x; }
+  .stage.c canvas { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; pointer-events: none; }
+
+  /* ---------- D: burning card ---------- */
+  .stage.d canvas.sparks { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; pointer-events: none; }
+  .cardD { position: relative; width: 230px; height: 280px; z-index: 1; margin-top: 44px; }
+  .cardD .inside { position: absolute; inset: 0; background: var(--bg-2); border: 1.5px solid var(--gold); display: grid; place-items: center; }
+  .cardD .inside span { font: 700 9rem/1 K; color: var(--gold-hi); text-shadow: 0 0 30px rgba(207,174,114,.3); }
+  .cardD canvas.cover { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; display: block; }
+
+  footer.note { margin-top: 2.5rem; color: var(--muted); font-size: .9rem; line-height: 1.6; max-width: 70ch; }
+
+  @media (prefers-reduced-motion: reduce) { .note-rm { display: block !important; } }
+  .note-rm { display: none; color: var(--gold-hi); margin-bottom: 1rem; }
+</style>
+</head>
+<body>
+<main class="page">
+  <h1>החותם של 37 · 4 אפשרויות</h1>
+  <p class="intro">לחצו "פתחו" בכל אחת. כולן בצבעי הנייבי והזהב של האתר. אפשר לשחק שוב עם "שוב". אחרי שתבחרו, אחבר את האפשרות לכרטיס באתר עצמו, כולל גרסה פשוטה למי שמבטל אנימציות.</p>
+  <p class="note-rm">שימו לב: במכשיר שלכם מוגדרת "הפחתת תנועה", לכן האנימציות כאן מקוצרות.</p>
+
+  <div class="grid">
+
+    <!-- A -->
+    <section class="opt" id="A">
+      <header><h2><b>A</b> · מעטפה עם חותם שעווה</h2><span class="tech">GSAP · 2D</span></header>
+      <p class="desc">מעטפה בצבע שמנת עם חותם שעווה בזהב. החותם נסדק לשניים, הדש נפתח לאחור בתלת־ממד, והכרטיס עם 37 מחליק החוצה. קלאסי, יוקרתי, קל מאוד לטעינה.</p>
+      <div class="stage">
+        <p class="q">חשבו על מספר בין 1 ל־50…</p>
+        <div class="envA">
+          <div class="back"></div>
+          <div class="card"><span>37</span><small>ידעתי</small></div>
+          <div class="front"><svg viewBox="0 0 300 190" preserveAspectRatio="none"><path d="M0 0 L150 105 L300 0 L300 190 L0 190 Z" fill="#efe6d2"/><path d="M0 190 L130 92 M300 190 L170 92" stroke="#d8ccb2" stroke-width="1.2"/></svg></div>
+          <div class="flap"><svg viewBox="0 0 300 120" preserveAspectRatio="none"><path d="M0 0 L300 0 L150 118 Z" fill="#e9dfc9"/><path d="M0 0 L150 118 L300 0" fill="none" stroke="#d6c9ad" stroke-width="1.2"/></svg></div>
+          <div class="seal">
+            <div class="half h1"><svg viewBox="0 0 62 62"><defs><radialGradient id="wax" cx="40%" cy="35%"><stop offset="0" stop-color="#d9b97c"/><stop offset=".55" stop-color="#b8955a"/><stop offset="1" stop-color="#7d5f2c"/></radialGradient><clipPath id="cl"><path d="M0 0 H33 L28 20 L35 33 L27 46 L31 62 H0 Z"/></clipPath><clipPath id="cr"><path d="M33 0 H62 V62 H31 L27 46 L35 33 L28 20 Z"/></clipPath></defs><g clip-path="url(#cl)"><circle cx="31" cy="31" r="29" fill="url(#wax)"/><circle cx="31" cy="31" r="20" fill="none" stroke="#7d5f2c" stroke-width="1.5" opacity=".6"/><text x="31" y="40" text-anchor="middle" font-family="K" font-size="26" fill="#5e4720">א</text></g></svg></div>
+            <div class="half h2"><svg viewBox="0 0 62 62"><g clip-path="url(#cr)"><circle cx="31" cy="31" r="29" fill="url(#wax)"/><circle cx="31" cy="31" r="20" fill="none" stroke="#7d5f2c" stroke-width="1.5" opacity=".6"/><text x="31" y="40" text-anchor="middle" font-family="K" font-size="26" fill="#5e4720">א</text></g></svg></div>
+          </div>
+        </div>
+      </div>
+      <div class="controls"><button class="play" data-play="A">פתחו</button><button class="reset" data-reset="A">שוב</button></div>
+    </section>
+
+    <!-- B -->
+    <section class="opt" id="B">
+      <header><h2><b>B</b> · מעטפה תלת־ממדית</h2><span class="tech">three.js · WebGL</span></header>
+      <p class="desc">מעטפה אמיתית בתלת־ממד שמתנועעת קלות עם העכבר או הטלפון. הדש נפתח, הכרטיס עולה ומסתובב אליכם, ותאורה זהובה רכה. הכי "וואו", אבל כבד יותר לטעינה.</p>
+      <div class="stage b" id="stageB"><p class="fallback">טוען…</p></div>
+      <div class="controls"><button class="play" data-play="B">פתחו</button><button class="reset" data-reset="B">שוב</button></div>
+    </section>
+
+    <!-- C -->
+    <section class="opt" id="C">
+      <header><h2><b>C</b> · וילון תיאטרון</h2><span class="tech">GSAP · Canvas</span></header>
+      <p class="desc">שני וילונות קטיפה בנייבי עם שוליים זהובים נפתחים כמו בתחילת מופע, ו־37 נחשף באור זרקור עם אבק זהב מרחף. הכי "במה", מתאים לאווירה של המופע.</p>
+      <div class="stage c" id="stageC">
+        <div class="spot"></div>
+        <div class="numC">37</div>
+        <canvas></canvas>
+        <div class="curtain l"></div><div class="curtain r"></div>
+        <div class="valance"></div>
+        <p class="knew">ידעתי.</p>
+      </div>
+      <div class="controls"><button class="play" data-play="C">פתחו</button><button class="reset" data-reset="C">שוב</button></div>
+    </section>
+
+    <!-- D -->
+    <section class="opt" id="D">
+      <header><h2><b>D</b> · קלף שנשרף</h2><span class="tech">Canvas · particles</span></header>
+      <p class="desc">קלף חתום בשמנת עם חותם זהב. כשפותחים, השוליים נשרפים פנימה בקו גחלים זהוב ונשארים רק ניצוצות, ו־37 נחשף בפנים. הכי דרמטי ו"קסום".</p>
+      <div class="stage d" id="stageD">
+        <p class="q">חשבו על מספר בין 1 ל־50…</p>
+        <div class="cardD">
+          <div class="inside"><span>37</span></div>
+          <canvas class="cover"></canvas>
+        </div>
+        <canvas class="sparks"></canvas>
+        <p class="knew">ידעתי.</p>
+      </div>
+      <div class="controls"><button class="play" data-play="D">פתחו</button><button class="reset" data-reset="D">שוב</button></div>
+    </section>
+
+  </div>
+
+  <footer class="note">
+    משקל משוער אחרי כיווץ: A ו־C כ־5KB קוד (GSAP כבר באתר). D כ־3KB. B מוסיף את three.js (כ־150KB), ולכן באתר הוא ייטען רק כשמגיעים לכרטיס.
+    כל האפשרויות יקבלו באתר גרסה סטטית למי שמגדיר "הפחתת תנועה", ויעבדו גם במקלדת.
+  </footer>
+</main>
+
+<script src="gsap.min.js"></script>
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const T = (s) => reduce ? Math.min(s, .15) : s;
+  const handlers = {};
+  document.addEventListener('click', (e) => {
+    const p = e.target.closest('[data-play]'); if (p) handlers[p.dataset.play]?.play();
+    const r = e.target.closest('[data-reset]'); if (r) handlers[r.dataset.reset]?.reset();
+  });
+
+  /* ================= A ================= */
+  (() => {
+    const root = document.querySelector('#A');
+    const q = gsap.utils.selector(root);
+    let tl;
+    const build = () => {
+      gsap.set(q('.flap'), { rotateX: 0, zIndex: 4 });
+      gsap.set(q('.card'), { y: 0, zIndex: 2 });
+      gsap.set(q('.seal .half'), { x: 0, y: 0, rotate: 0, opacity: 1 });
+      gsap.set(q('.seal'), { scale: 1 });
+      tl = gsap.timeline({ paused: true })
+        .to(q('.seal'), { scale: 1.12, duration: T(.18), ease: 'power2.out' })
+        .to(q('.seal'), { scale: 1, duration: T(.12) })
+        .to(q('.seal .h1'), { x: -26, y: 42, rotate: -38, opacity: 0, duration: T(.7), ease: 'power2.in' }, '>-0.02')
+        .to(q('.seal .h2'), { x: 24, y: 46, rotate: 30, opacity: 0, duration: T(.7), ease: 'power2.in' }, '<')
+        .to(q('.flap'), { rotateX: 180, duration: T(.75), ease: 'power2.inOut' }, '-=0.45')
+        .set(q('.flap'), { zIndex: 1 }, '-=0.38')
+        .to(q('.card'), { y: -150, duration: T(.85), ease: 'power3.out' }, '-=0.15')
+        .set(q('.card'), { zIndex: 6 })
+        .to(q('.card'), { y: -95, scale: 1.04, duration: T(.6), ease: 'power2.inOut' });
+    };
+    build();
+    handlers.A = { play: () => tl.restart(), reset: () => { tl.kill(); build(); } };
+  })();
+
+  /* ================= C ================= */
+  (() => {
+    const root = document.querySelector('#C');
+    const q = gsap.utils.selector(root);
+    const cv = root.querySelector('canvas'), ctx = cv.getContext('2d');
+    let parts = [], raf = 0, tl;
+    const size = () => { const r = cv.getBoundingClientRect(); cv.width = r.width * devicePixelRatio; cv.height = r.height * devicePixelRatio; };
+    size(); addEventListener('resize', size);
+    const dust = () => {
+      ctx.clearRect(0, 0, cv.width, cv.height);
+      for (const p of parts) {
+        p.x += p.vx; p.y += p.vy; p.a += p.va;
+        if (p.y < -10) { p.y = cv.height + 10; }
+        const al = Math.max(0, Math.sin(p.a)) * p.o;
+        ctx.fillStyle = `rgba(207,174,114,${al})`;
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fill();
+      }
+      raf = requestAnimationFrame(dust);
+    };
+    const startDust = () => {
+      const d = devicePixelRatio;
+      parts = Array.from({ length: reduce ? 0 : 70 }, () => ({
+        x: cv.width * (0.3 + Math.random() * 0.4), y: Math.random() * cv.height,
+        vx: (Math.random() - .5) * .25 * d, vy: -(.15 + Math.random() * .45) * d,
+        r: (.6 + Math.random() * 1.8) * d, a: Math.random() * 6, va: .01 + Math.random() * .03, o: .35 + Math.random() * .5,
+      }));
+      cancelAnimationFrame(raf); dust();
+    };
+    const build = () => {
+      cancelAnimationFrame(raf); ctx.clearRect(0, 0, cv.width, cv.height);
+      gsap.set(q('.curtain'), { skewY: 0, scaleX: 1 });
+      gsap.set([q('.spot'), q('.numC'), q('.knew')], { opacity: 0 });
+      gsap.set(q('.numC'), { scale: .85, y: 0 });
+      tl = gsap.timeline({ paused: true })
+        .to(q('.curtain.l'), { xPercent: -6, skewY: 1.2, duration: T(.25), ease: 'sine.inOut' })
+        .to(q('.curtain.r'), { xPercent: 6, skewY: -1.2, duration: T(.25), ease: 'sine.inOut' }, '<')
+        .to(q('.curtain.l'), { scaleX: .2, skewY: 0, duration: T(2), ease: 'power3.inOut' })
+        .to(q('.curtain.r'), { scaleX: .2, skewY: 0, duration: T(2), ease: 'power3.inOut' }, '<')
+        .to(q('.spot'), { opacity: 1, duration: T(1) }, '-=1.2')
+        .add(startDust, '<')
+        .to(q('.numC'), { opacity: 1, scale: 1, duration: T(1), ease: 'back.out(1.6)' }, '-=0.7')
+        .to(q('.knew'), { opacity: 1, y: -4, duration: T(.5) }, '-=0.2');
+    };
+    build();
+    handlers.C = { play: () => tl.restart(), reset: () => { tl.kill(); build(); } };
+  })();
+
+  /* ================= D ================= */
+  (() => {
+    const root = document.querySelector('#D');
+    const cover = root.querySelector('canvas.cover'), cx = cover.getContext('2d');
+    const sparksCv = root.querySelector('canvas.sparks'), sx = sparksCv.getContext('2d');
+    const knew = root.querySelector('.knew');
+    let W, H, noise, raf = 0, t0 = 0, burning = false, sparks = [];
+    const DUR = reduce ? 200 : 2600;
+
+    const size = () => {
+      const d = devicePixelRatio;
+      const r = cover.getBoundingClientRect(); W = cover.width = Math.round(r.width * d); H = cover.height = Math.round(r.height * d);
+      const s = sparksCv.getBoundingClientRect(); sparksCv.width = s.width * d; sparksCv.height = s.height * d;
+      // Value-noise field: burn starts at the edges and eats inward with ragged borders.
+      const gw = 40, gh = 48, grid = Array.from({ length: (gw + 1) * (gh + 1) }, () => Math.random());
+      noise = new Float32Array(W * H);
+      for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+        const fx = x / W * gw, fy = y / H * gh, ix = fx | 0, iy = fy | 0, tx = fx - ix, ty = fy - iy;
+        const g = (i, j) => grid[(iy + j) * (gw + 1) + ix + i];
+        const n = (g(0,0)*(1-tx)+g(1,0)*tx)*(1-ty)+(g(0,1)*(1-tx)+g(1,1)*tx)*ty;
+        const edge = Math.min(x / W, 1 - x / W, y / H, 1 - y / H) * 2;   // 0 at edge, 1 at centre
+        noise[y * W + x] = edge * .78 + n * .22;
+      }
+    };
+
+    const drawCover = (th) => {
+      const img = cx.createImageData(W, H), d = img.data;
+      const base = [239, 230, 210], gold = [207, 174, 114];
+      for (let i = 0; i < W * H; i++) {
+        const v = noise[i], o = i * 4;
+        if (th > 0 && v < th) { d[o + 3] = 0; continue; }    // burned away
+        const k = v - th;
+        if (th > 0 && k < .018) { d[o] = 255; d[o+1] = 196; d[o+2] = 110; d[o+3] = 255; continue; }   // glowing edge
+        if (th > 0 && k < .05) { const m = (k - .018) / .032; d[o] = 40 + m*(base[0]-40); d[o+1] = 28 + m*(base[1]-28); d[o+2] = 18 + m*(base[2]-18); d[o+3] = 255; continue; } // char
+        d[o] = base[0]; d[o+1] = base[1]; d[o+2] = base[2]; d[o+3] = 255;
+      }
+      cx.putImageData(img, 0, 0);
+      if (th <= 0) {   // untouched card: gold border + wax seal
+        const dpr = devicePixelRatio;
+        cx.strokeStyle = 'rgba(184,149,90,.9)'; cx.lineWidth = 2 * dpr; cx.strokeRect(10*dpr, 10*dpr, W - 20*dpr, H - 20*dpr);
+        const g = cx.createRadialGradient(W/2 - 8*dpr, H/2 - 10*dpr, 2, W/2, H/2, 34*dpr);
+        g.addColorStop(0, '#d9b97c'); g.addColorStop(.6, '#b8955a'); g.addColorStop(1, '#7d5f2c');
+        cx.fillStyle = g; cx.beginPath(); cx.arc(W/2, H/2, 32*dpr, 0, 7); cx.fill();
+        cx.fillStyle = '#5e4720'; cx.font = `700 ${30*dpr}px K`; cx.textAlign = 'center'; cx.textBaseline = 'middle'; cx.fillText('א', W/2, H/2 + 2*dpr);
+      }
+    };
+
+    const emit = (th) => {
+      if (reduce) return;
+      const r = cover.getBoundingClientRect(), s = sparksCv.getBoundingClientRect(), d = devicePixelRatio;
+      for (let n = 0; n < 26; n++) {
+        const i = (Math.random() * W * H) | 0, v = noise[i];
+        if (Math.abs(v - th) < .02) {
+          const x = (i % W) / d + r.left - s.left, y = ((i / W) | 0) / d + r.top - s.top;
+          sparks.push({ x: x * d, y: y * d, vx: (Math.random() - .5) * 1.2 * d, vy: -(0.6 + Math.random() * 1.6) * d, life: 1, r: (0.8 + Math.random() * 1.6) * d });
+        }
+      }
+    };
+    const drawSparks = () => {
+      sx.clearRect(0, 0, sparksCv.width, sparksCv.height);
+      sparks = sparks.filter((p) => (p.life -= .016) > 0);
+      for (const p of sparks) {
+        p.x += p.vx; p.y += p.vy; p.vy += .01;
+        sx.fillStyle = `rgba(${230 + Math.random()*25|0},${170 + Math.random()*40|0},90,${p.life})`;
+        sx.beginPath(); sx.arc(p.x, p.y, p.r * p.life, 0, 7); sx.fill();
+      }
+    };
+    const frame = (now) => {
+      const k = Math.min(1, (now - t0) / DUR);
+      const th = k * 1.08;                         // a bit past 1 so the centre fully clears
+      drawCover(th); emit(th); drawSparks();
+      if (k > .82) knew.style.opacity = String(Math.min(1, (k - .82) / .18));
+      if (k < 1 || sparks.length) raf = requestAnimationFrame(frame);
+    };
+    const reset = () => { cancelAnimationFrame(raf); burning = false; sparks = []; knew.style.opacity = '0'; sx.clearRect(0,0,sparksCv.width,sparksCv.height); drawCover(0); };
+    size(); document.fonts.ready.then(reset);
+    addEventListener('resize', () => { size(); reset(); });
+    handlers.D = { play: () => { reset(); burning = true; t0 = performance.now(); raf = requestAnimationFrame(frame); }, reset };
+  })();
+</script>
+
+<!-- ================= B (three.js) ================= -->
+<script type="importmap">
+  { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.186.0/build/three.module.js" } }
+</script>
+<script type="module">
+  import * as THREE from 'three';
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const stage = document.getElementById('stageB');
+  stage.innerHTML = '';
+  const W = () => stage.clientWidth, H = () => stage.clientHeight;
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(W(), H());
+  renderer.outputColorSpace = THREE.SRGBColorSpace;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.shadowMap.enabled = true;
+  stage.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color('#070b14');
+  scene.fog = new THREE.Fog('#070b14', 9, 18);
+  const camera = new THREE.PerspectiveCamera(32, W() / H(), 0.1, 50);
+  camera.position.set(0, 0.6, 9);
+
+  scene.add(new THREE.HemisphereLight('#f2ead9', '#0c1322', 0.55));
+  const key = new THREE.SpotLight('#ffe2a8', 60, 30, Math.PI / 6, 0.5, 1.4);
+  key.position.set(3, 6, 6); key.castShadow = true; key.shadow.mapSize.set(1024, 1024);
+  scene.add(key, key.target);
+  const rim = new THREE.PointLight('#cfae72', 8, 12); rim.position.set(-4, 1, -2); scene.add(rim);
+
+  // Text texture for the card: a canvas drawn with the site font.
+  const cardCanvas = document.createElement('canvas'); cardCanvas.width = 512; cardCanvas.height = 640;
+  const paintCard = () => {
+    const g = cardCanvas.getContext('2d');
+    g.fillStyle = '#f2ead9'; g.fillRect(0, 0, 512, 640);
+    g.strokeStyle = '#b8955a'; g.lineWidth = 6; g.strokeRect(18, 18, 476, 604);
+    g.fillStyle = '#0c1322'; g.textAlign = 'center'; g.textBaseline = 'middle';
+    g.font = '700 330px K, sans-serif'; g.fillText('37', 256, 300);
+    g.fillStyle = '#7d5f2c'; g.font = '600 46px H, sans-serif'; g.fillText('ידעתי.', 256, 540);
+  };
+  paintCard();
+  const cardTex = new THREE.CanvasTexture(cardCanvas); cardTex.colorSpace = THREE.SRGBColorSpace; cardTex.anisotropy = 8;
+
+  const paper = new THREE.MeshStandardMaterial({ color: '#e9dfc9', roughness: 0.85, metalness: 0, side: THREE.DoubleSide });
+  const paperIn = new THREE.MeshStandardMaterial({ color: '#d9cdb2', roughness: 0.9, side: THREE.DoubleSide });
+  const goldMat = new THREE.MeshStandardMaterial({ color: '#b8955a', roughness: 0.32, metalness: 0.85 });
+
+  const env = new THREE.Group(); scene.add(env);
+  const EW = 3.2, EH = 2.1;
+
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(EW, EH), paperIn); back.position.z = -0.02; back.receiveShadow = true; env.add(back);
+
+  const card = new THREE.Mesh(new THREE.PlaneGeometry(EW * 0.86, EH * 1.25), new THREE.MeshStandardMaterial({ map: cardTex, roughness: 0.7 }));
+  card.position.set(0, -0.05, 0.0); card.castShadow = true; env.add(card);
+
+  // Front pocket: envelope body with a V cut at the top.
+  const fShape = new THREE.Shape();
+  fShape.moveTo(-EW / 2, -EH / 2); fShape.lineTo(EW / 2, -EH / 2); fShape.lineTo(EW / 2, EH / 2); fShape.lineTo(0, -0.05); fShape.lineTo(-EW / 2, EH / 2); fShape.closePath();
+  const front = new THREE.Mesh(new THREE.ShapeGeometry(fShape), paper); front.position.z = 0.03; front.castShadow = true; env.add(front);
+
+  // Flap: hinged on the top edge.
+  const flapPivot = new THREE.Group(); flapPivot.position.set(0, EH / 2, 0.04); env.add(flapPivot);
+  const flShape = new THREE.Shape(); flShape.moveTo(-EW / 2, 0); flShape.lineTo(EW / 2, 0); flShape.lineTo(0, -EH * 0.62); flShape.closePath();
+  const flap = new THREE.Mesh(new THREE.ShapeGeometry(flShape), paper); flap.castShadow = true; flapPivot.add(flap);
+
+  // Gold wax seal on the flap tip.
+  const seal = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.28, 0.07, 48), goldMat);
+  seal.rotation.x = Math.PI / 2; seal.position.set(0, -EH * 0.62 + 0.12, 0.04); seal.castShadow = true; flapPivot.add(seal);
+  const sealRing = new THREE.Mesh(new THREE.TorusGeometry(0.17, 0.018, 12, 48), goldMat); sealRing.position.set(0, -EH * 0.62 + 0.12, 0.08); flapPivot.add(sealRing);
+
+  const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), new THREE.ShadowMaterial({ opacity: 0.35 }));
+  floor.rotation.x = -Math.PI / 2; floor.position.y = -1.7; floor.receiveShadow = true; scene.add(floor);
+
+  env.rotation.set(-0.12, 0.18, 0);
+
+  // Pointer tilt (subtle); off for reduced motion.
+  let tx = 0, ty = 0;
+  stage.addEventListener('pointermove', (e) => { const r = stage.getBoundingClientRect(); tx = ((e.clientX - r.left) / r.width - .5) * 0.5; ty = ((e.clientY - r.top) / r.height - .5) * 0.3; });
+  stage.addEventListener('pointerleave', () => { tx = 0; ty = 0; });
+
+  let tl;
+  const build = () => {
+    flapPivot.rotation.x = 0; flapPivot.position.z = 0.04; seal.scale.set(1, 1, 1); seal.material.opacity = 1;
+    card.position.set(0, -0.05, 0); card.rotation.set(0, 0, 0); card.scale.set(1, 1, 1);
+    env.position.set(0, 0, 0);
+    const D = (s) => reduce ? Math.min(s, .15) : s;
+    tl = gsap.timeline({ paused: true })
+      .to(seal.scale, { x: 1.15, y: 1.15, z: 1.15, duration: D(.2), ease: 'power2.out' })
+      .to(seal.scale, { x: 0.001, y: 0.001, z: 0.001, duration: D(.35), ease: 'back.in(2)' })
+      .to(sealRing.scale, { x: 0.001, y: 0.001, z: 0.001, duration: D(.3) }, '<')
+      .to(flapPivot.rotation, { x: -Math.PI * 0.98, duration: D(1), ease: 'power2.inOut' }, '-=0.1')
+      .set(flapPivot.position, { z: -0.05 }, '-=0.5')
+      .to(card.position, { y: 2.1, duration: D(.9), ease: 'power3.out' }, '-=0.25')
+      .to(env.position, { y: -1.0, z: -0.6, duration: D(.9), ease: 'power3.out' }, '<')
+      .to(card.position, { y: 1.15, z: 2.6, duration: D(.8), ease: 'power2.inOut' })
+      .to(card.rotation, { x: 0.12, y: -0.18, duration: D(.8), ease: 'power2.inOut' }, '<')
+      .to(card.scale, { x: 1.1, y: 1.1, duration: D(.8) }, '<');
+  };
+  build();
+  window.__envB = { play: () => { build(); tl.restart(); }, reset: () => { tl.kill(); build(); } };
+
+  const loop = () => {
+    const tgtX = -0.12 + (reduce ? 0 : ty), tgtY = 0.18 + (reduce ? 0 : tx);
+    env.rotation.x += (tgtX - env.rotation.x) * 0.06;
+    env.rotation.y += (tgtY - env.rotation.y) * 0.06;
+    renderer.render(scene, camera);
+    requestAnimationFrame(loop);
+  };
+  loop();
+  addEventListener('resize', () => { renderer.setSize(W(), H()); camera.aspect = W() / H(); camera.updateProjectionMatrix(); });
+  document.fonts.load('700 100px K').then(() => document.fonts.ready).then(() => { paintCard(); cardTex.needsUpdate = true; });
+</script>
+<script>
+  // Hook B into the shared buttons once its module has loaded.
+  document.addEventListener('click', (e) => {
+    const p = e.target.closest('[data-play="B"]'); if (p) window.__envB?.play();
+    const r = e.target.closest('[data-reset="B"]'); if (r) window.__envB?.reset();
+  });
+</script>
+</body>
+</html>
