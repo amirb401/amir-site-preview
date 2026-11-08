@@ -27,10 +27,8 @@
   .btn { display: inline-flex; align-items: center; justify-content: center; gap: .55rem; min-height: 52px; padding: 0 1.5rem; border-radius: 999px; font: 600 1rem H; text-decoration: none; border: 1.5px solid transparent; cursor: pointer; }
   .btn-ghost { border-color: #f2ead973; color: var(--ink); }
   .ico { width: 22px; height: 22px; flex: none; display: block; }
-  /* Icon on a small white badge: keeps WhatsApp green readable on gold */
-  .badge { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: #fff; flex: none; }
-  .badge .ico { width: 18px; height: 18px; }
-  .badge.navy { background: var(--bg); }
+  .ico-hi { color: #075E54; }   /* WhatsApp dark teal, 3.6:1 on #CFAE72 */
+  .ico-deep { color: #054d44; } /* same teal, darker for #B8955A, 3.5:1 */
 
   .wa-green   { background: var(--wa); color: #fff; }
   .wa-gold-hi { background: var(--gold-hi); color: var(--bg); }
@@ -56,7 +54,7 @@
 
 <main class="page">
   <h1>כפתור וואטסאפ · זהב או ירוק</h1>
-  <p class="intro">כל הכפתורים עם אייקון וואטסאפ בצד ימין של הטקסט. על רקע זהוב, הירוק של וואטסאפ כמעט נעלם (ניגודיות 1:1), לכן האייקון יושב על עיגול לבן קטן, כמו האייקון של האפליקציה עצמה. למטה: אותה אפשרות בתוך פתיח האתר ובפס התחתון בטלפון.</p>
+  <p class="intro">כל הכפתורים עם אייקון וואטסאפ (קווים בלבד, בלי רקע) מימין לטקסט. על הזהב האייקון בגוון הטורקיז הכהה של וואטסאפ, כי הירוק הבהיר כמעט נעלם על זהב. למטה: אותן אפשרויות בתוך פתיח האתר ובפס התחתון בטלפון.</p>
 
   <div class="grid">
     <section class="opt">
@@ -71,28 +69,19 @@
     <section class="opt">
       <h2><b>1</b> · זהב בהיר</h2>
       <div class="row">
-        <a class="btn wa-gold-hi" href="#"><span class="badge"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg></span>כתבו לי בוואטסאפ</a>
+        <a class="btn wa-gold-hi" href="#"><svg class="ico ico-hi"><use href="#wa"/></svg>כתבו לי בוואטסאפ</a>
       </div>
-      <p>הזהב הבהיר שביקשת. בולט מאוד על הנייבי, טקסט נייבי (ניגודיות 8.8:1).</p>
+      <p>הזהב הבהיר שביקשת. בולט מאוד על הנייבי. טקסט נייבי (8.8:1), אייקון בטורקיז של וואטסאפ.</p>
       <span class="code">#CFAE72</span>
     </section>
 
     <section class="opt">
       <h2><b>2</b> · הזהב של האתר</h2>
       <div class="row">
-        <a class="btn wa-gold" href="#"><span class="badge"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg></span>כתבו לי בוואטסאפ</a>
+        <a class="btn wa-gold" href="#"><svg class="ico ico-deep"><use href="#wa"/></svg>כתבו לי בוואטסאפ</a>
       </div>
-      <p>הזהב הראשי של האתר, עמוק יותר ויוקרתי יותר, טקסט נייבי (6.6:1).</p>
+      <p>הזהב הראשי של האתר, עמוק ויוקרתי. טקסט נייבי (6.6:1), אייקון בטורקיז כהה.</p>
       <span class="code">#B8955A</span>
-    </section>
-
-    <section class="opt">
-      <h2><b>3</b> · זהב בהיר, בלי עיגול</h2>
-      <div class="row">
-        <a class="btn wa-gold-hi" href="#"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg>כתבו לי בוואטסאפ</a>
-        <a class="btn wa-gold-hi" href="#"><svg class="ico" style="color:#0b6b3a"><use href="#wa"/></svg>כתבו לי בוואטסאפ</a>
-      </div>
-      <p>לשם השוואה: מימין הירוק של וואטסאפ ישירות על הזהב (כמעט לא נראה), משמאל ירוק כהה (נראה, אבל פחות "וואטסאפי").</p>
     </section>
   </div>
 
@@ -102,7 +91,7 @@
       <p class="h">אתם תבחרו.<br>אני כבר יודע.</p>
       <p class="lead">קריאת מחשבות והשפעה, רגעים שאי אפשר להסביר, וצחוק אמיתי בין לבין.</p>
       <div class="row">
-        <a class="btn wa-gold-hi" href="#"><span class="badge"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg></span>כתבו לי בוואטסאפ</a>
+        <a class="btn wa-gold-hi" href="#"><svg class="ico ico-hi"><use href="#wa"/></svg>כתבו לי בוואטסאפ</a>
         <a class="btn btn-ghost" href="#" style="font-weight:400">רגעים מהמופע</a>
       </div>
     </div>
@@ -115,7 +104,7 @@
       <p class="h">אתם תבחרו.<br>אני כבר יודע.</p>
       <p class="lead">קריאת מחשבות והשפעה, רגעים שאי אפשר להסביר, וצחוק אמיתי בין לבין.</p>
       <div class="row">
-        <a class="btn wa-gold" href="#"><span class="badge"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg></span>כתבו לי בוואטסאפ</a>
+        <a class="btn wa-gold" href="#"><svg class="ico ico-deep"><use href="#wa"/></svg>כתבו לי בוואטסאפ</a>
         <a class="btn btn-ghost" href="#" style="font-weight:400">רגעים מהמופע</a>
       </div>
     </div>
@@ -125,8 +114,8 @@
   <h3 class="section-h">הפס התחתון בטלפון</h3>
   <div class="grid">
     <section class="opt"><h2>היום</h2><div class="bar"><a class="btn wa-green" href="#"><svg class="ico"><use href="#wa"/></svg>וואטסאפ</a><a class="btn btn-dark" href="#">התקשרו</a></div></section>
-    <section class="opt"><h2><b>1</b> · זהב בהיר</h2><div class="bar"><a class="btn wa-gold-hi" href="#"><span class="badge"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg></span>וואטסאפ</a><a class="btn btn-dark" href="#">התקשרו</a></div></section>
-    <section class="opt"><h2><b>2</b> · הזהב של האתר</h2><div class="bar"><a class="btn wa-gold" href="#"><span class="badge"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg></span>וואטסאפ</a><a class="btn btn-dark" href="#">התקשרו</a></div></section>
+    <section class="opt"><h2><b>1</b> · זהב בהיר</h2><div class="bar"><a class="btn wa-gold-hi" href="#"><svg class="ico ico-hi"><use href="#wa"/></svg>וואטסאפ</a><a class="btn btn-dark" href="#">התקשרו</a></div></section>
+    <section class="opt"><h2><b>2</b> · הזהב של האתר</h2><div class="bar"><a class="btn wa-gold" href="#"><svg class="ico ico-deep"><use href="#wa"/></svg>וואטסאפ</a><a class="btn btn-dark" href="#">התקשרו</a></div></section>
   </div>
 </main>
 </body>
