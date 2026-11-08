@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>כפתור וואטסאפ · אפשרויות</title>
+<style>
+  @font-face { font-family: K; src: url(karantina-hebrew-700-normal.woff2) format('woff2'); font-weight: 700; }
+  @font-face { font-family: H; src: url(heebo-hebrew-400-normal.woff2) format('woff2'); font-weight: 400; }
+  @font-face { font-family: H; src: url(heebo-hebrew-600-normal.woff2) format('woff2'); font-weight: 600; }
+  :root { --stage:#070b14; --bg:#0c1322; --bg-2:#131c30; --line:#26314a; --ink:#f2ead9; --ink-2:#dcd3c0; --muted:#9a9a92; --gold:#b8955a; --gold-hi:#cfae72; --wa:#1a8a4f; --wa-brand:#25D366; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font-family: H, system-ui, sans-serif; overflow-x: clip; }
+  .page { max-width: 1180px; margin: 0 auto; padding: 40px 20px 70px; }
+  h1 { font: 700 clamp(2.4rem, 1.8rem + 3vw, 4rem)/.9 K; margin: 0 0 .5rem; }
+  .intro { color: var(--ink-2); max-width: 64ch; line-height: 1.6; margin: 0 0 2rem; }
+  .grid { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); }
+  .opt { background: var(--bg-2); border: 1px solid var(--line); padding: 22px 20px 20px; display: grid; gap: 16px; }
+  .opt h2 { font: 700 1.9rem/1 K; margin: 0; }
+  .opt h2 b { color: var(--gold-hi); }
+  .opt p { margin: 0; color: var(--muted); font-size: .88rem; line-height: 1.5; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .code { font: 600 .8rem/1 ui-monospace, Consolas, monospace; color: var(--ink-2); background: var(--bg); border: 1px solid var(--line); padding: 4px 8px; border-radius: 6px; direction: ltr; }
+
+  /* Button base, identical to the site */
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: .55rem; min-height: 52px; padding: 0 1.5rem; border-radius: 999px; font: 600 1rem H; text-decoration: none; border: 1.5px solid transparent; cursor: pointer; }
+  .btn-ghost { border-color: #f2ead973; color: var(--ink); }
+  .ico { width: 22px; height: 22px; flex: none; display: block; }
+  /* Icon on a small white badge: keeps WhatsApp green readable on gold */
+  .badge { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; background: #fff; flex: none; }
+  .badge .ico { width: 18px; height: 18px; }
+  .badge.navy { background: var(--bg); }
+
+  .wa-green   { background: var(--wa); color: #fff; }
+  .wa-gold-hi { background: var(--gold-hi); color: var(--bg); }
+  .wa-gold    { background: var(--gold); color: var(--bg); }
+
+  /* Mini hero mock to see it in context */
+  .ctx { position: relative; background: radial-gradient(ellipse 60% 70% at 25% 55%, #1d2a44 0, transparent 70%), var(--stage); border: 1px solid var(--line); padding: 34px 28px; display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: end; overflow: hidden; }
+  .ctx .h { font: 700 clamp(2.2rem, 1.6rem + 2.4vw, 3.4rem)/.9 K; margin: 0 0 .9rem; }
+  .ctx .lead { color: var(--ink-2); margin: 0 0 1.2rem; max-width: 34ch; line-height: 1.55; }
+  .ctx img { height: 230px; width: auto; display: block; }
+  .bar { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 10px 12px; background: #0c1322eb; border: 1px solid var(--line); max-width: 390px; }
+  .bar .btn { min-height: 50px; padding: 0; }
+  .btn-dark { background: var(--ink); color: var(--bg); }
+  .section-h { font: 700 1.6rem/1 K; margin: 2.4rem 0 .8rem; color: var(--ink); }
+  @media (max-width: 700px) { .ctx { grid-template-columns: 1fr; } .ctx img { display: none; } }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- WhatsApp glyph (speech bubble + handset), single path -->
+  <symbol id="wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.23 8.23 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.83 2.42a8.18 8.18 0 0 1 2.41 5.83c0 4.54-3.7 8.23-8.24 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.12-.16.25-.64.81-.79.98-.14.16-.29.18-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.16 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.16 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></symbol>
+</svg>
+
+<main class="page">
+  <h1>כפתור וואטסאפ · זהב או ירוק</h1>
+  <p class="intro">כל הכפתורים עם אייקון וואטסאפ בצד ימין של הטקסט. על רקע זהוב, הירוק של וואטסאפ כמעט נעלם (ניגודיות 1:1), לכן האייקון יושב על עיגול לבן קטן, כמו האייקון של האפליקציה עצמה. למטה: אותה אפשרות בתוך פתיח האתר ובפס התחתון בטלפון.</p>
+
+  <div class="grid">
+    <section class="opt">
+      <h2>היום · ירוק</h2>
+      <div class="row">
+        <a class="btn wa-green" href="#"><svg class="ico"><use href="#wa"/></svg>כתבו לי בוואטסאפ</a>
+      </div>
+      <p>הירוק המוכר של וואטסאפ. מזוהה מיד, אבל "צבע זר" לפלטה.</p>
+      <span class="code">#1A8A4F</span>
+    </section>
+
+    <section class="opt">
+      <h2><b>1</b> · זהב בהיר</h2>
+      <div class="row">
+        <a class="btn wa-gold-hi" href="#"><span class="badge"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg></span>כתבו לי בוואטסאפ</a>
+      </div>
+      <p>הזהב הבהיר שביקשת. בולט מאוד על הנייבי, טקסט נייבי (ניגודיות 8.8:1).</p>
+      <span class="code">#CFAE72</span>
+    </section>
+
+    <section class="opt">
+      <h2><b>2</b> · הזהב של האתר</h2>
+      <div class="row">
+        <a class="btn wa-gold" href="#"><span class="badge"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg></span>כתבו לי בוואטסאפ</a>
+      </div>
+      <p>הזהב הראשי של האתר, עמוק יותר ויוקרתי יותר, טקסט נייבי (6.6:1).</p>
+      <span class="code">#B8955A</span>
+    </section>
+
+    <section class="opt">
+      <h2><b>3</b> · זהב בהיר, בלי עיגול</h2>
+      <div class="row">
+        <a class="btn wa-gold-hi" href="#"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg>כתבו לי בוואטסאפ</a>
+        <a class="btn wa-gold-hi" href="#"><svg class="ico" style="color:#0b6b3a"><use href="#wa"/></svg>כתבו לי בוואטסאפ</a>
+      </div>
+      <p>לשם השוואה: מימין הירוק של וואטסאפ ישירות על הזהב (כמעט לא נראה), משמאל ירוק כהה (נראה, אבל פחות "וואטסאפי").</p>
+    </section>
+  </div>
+
+  <h3 class="section-h">אפשרות 1 בפתיח האתר</h3>
+  <div class="ctx">
+    <div>
+      <p class="h">אתם תבחרו.<br>אני כבר יודע.</p>
+      <p class="lead">קריאת מחשבות והשפעה, רגעים שאי אפשר להסביר, וצחוק אמיתי בין לבין.</p>
+      <div class="row">
+        <a class="btn wa-gold-hi" href="#"><span class="badge"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg></span>כתבו לי בוואטסאפ</a>
+        <a class="btn btn-ghost" href="#" style="font-weight:400">רגעים מהמופע</a>
+      </div>
+    </div>
+    <img src="figure.png" alt="">
+  </div>
+
+  <h3 class="section-h">אפשרות 2 בפתיח האתר</h3>
+  <div class="ctx">
+    <div>
+      <p class="h">אתם תבחרו.<br>אני כבר יודע.</p>
+      <p class="lead">קריאת מחשבות והשפעה, רגעים שאי אפשר להסביר, וצחוק אמיתי בין לבין.</p>
+      <div class="row">
+        <a class="btn wa-gold" href="#"><span class="badge"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg></span>כתבו לי בוואטסאפ</a>
+        <a class="btn btn-ghost" href="#" style="font-weight:400">רגעים מהמופע</a>
+      </div>
+    </div>
+    <img src="figure.png" alt="">
+  </div>
+
+  <h3 class="section-h">הפס התחתון בטלפון</h3>
+  <div class="grid">
+    <section class="opt"><h2>היום</h2><div class="bar"><a class="btn wa-green" href="#"><svg class="ico"><use href="#wa"/></svg>וואטסאפ</a><a class="btn btn-dark" href="#">התקשרו</a></div></section>
+    <section class="opt"><h2><b>1</b> · זהב בהיר</h2><div class="bar"><a class="btn wa-gold-hi" href="#"><span class="badge"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg></span>וואטסאפ</a><a class="btn btn-dark" href="#">התקשרו</a></div></section>
+    <section class="opt"><h2><b>2</b> · הזהב של האתר</h2><div class="bar"><a class="btn wa-gold" href="#"><span class="badge"><svg class="ico" style="color:var(--wa-brand)"><use href="#wa"/></svg></span>וואטסאפ</a><a class="btn btn-dark" href="#">התקשרו</a></div></section>
+  </div>
+</main>
+</body>
+</html>
